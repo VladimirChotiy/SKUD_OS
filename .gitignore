@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+SKUD_OS/Debug/makedep.mk
+SKUD_OS/Debug/Makefile
+SKUD_OS/Debug/SKUD_OS.eep
+SKUD_OS/Debug/SKUD_OS.elf
+SKUD_OS/Debug/SKUD_OS.hex
+SKUD_OS/Debug/SKUD_OS.lss
+SKUD_OS/Debug/SKUD_OS.map
+SKUD_OS/Debug/SKUD_OS.srec
