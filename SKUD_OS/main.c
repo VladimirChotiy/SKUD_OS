@@ -10,6 +10,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/wdt.h>
 
 uint8_t s_ready;
 uint8_t nc_last_state;
@@ -17,6 +18,7 @@ uint8_t no_last_state;
 
 
 void SetPulse(void){
+	wdt_reset();
 	s_ready = 0;
 	PORTB |= (1<<PORTB0);
 	_delay_ms(1000);
@@ -33,14 +35,18 @@ int main(void)
 	PORTB = (1 << PORTB1) | (1 << PORTB2) | (1 << PORTB3) | (1 << PORTB4);
 	s_ready = r_active;
 	
+	wdt_enable(WDTO_4S);
+	
     while (1) 
     {
-		if((PINB & (1<<PINB3))) nc_last_state = r_active;
-		if((PINB & (1<<PINB4))) no_last_state = r_active;
+		wdt_reset();
+		if(((PINB & (1<<PINB3))) && (nc_last_state == r_nonactive)) nc_last_state = r_active;
+		if(((PINB & (1<<PINB4))) && (no_last_state == r_nonactive)) no_last_state = r_active;
 		
 		if((!(PINB & (1<<PINB1))) && (s_ready == 1)){
 			if((!(PINB & (1<<PINB3))) && (nc_last_state == r_active)){
-				_delay_ms(50);
+				_delay_ms(20);
+				wdt_reset();
 				if(!(PINB & (1<<PINB3))){
 					nc_last_state = r_nonactive;
 					SetPulse();
@@ -48,7 +54,8 @@ int main(void)
 			}
 		}else{
 			if((!(PINB & (1<<PINB4))) && (no_last_state == r_active)){
-				_delay_ms(50);
+				wdt_reset();
+				_delay_ms(20);
 				if(!(PINB & (1<<PINB4))){
 					no_last_state = r_nonactive;
 					SetPulse();
