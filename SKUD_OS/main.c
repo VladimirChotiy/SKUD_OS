@@ -19,12 +19,12 @@ uint8_t no_last_state;
 
 void SetPulse(void){
 	wdt_reset();
-	s_ready = 0;
+	s_ready = r_nonactive;
 	PORTB |= (1<<PORTB0);
 	_delay_ms(1000);
 	PORTB &= ~(1<<PORTB0);
 	_delay_ms(1000);
-	s_ready = 1;
+	s_ready = r_active;
 }
 
 int main(void)
@@ -34,6 +34,8 @@ int main(void)
 	DDRB = (1 << DDB0);
 	PORTB = (1 << PORTB1) | (1 << PORTB2) | (1 << PORTB3) | (1 << PORTB4);
 	s_ready = r_active;
+	nc_last_state = r_active;
+	no_last_state = r_active;
 	
 	wdt_enable(WDTO_4S);
 	
